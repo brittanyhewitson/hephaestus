@@ -1,0 +1,19 @@
+{% extends 'invoices/base_view.html' %}
+
+{{ form.media }} 
+{% block content %}
+<div class="container">
+	<form class="form-horizontal" method="POST" action="">
+		{% csrf_token %}
+		<table>
+			<thead>{{ invoice_form.as_p }}</thead>
+		</table>
+		
+		<input class="btn btn-primary btn-sm" type="submit" name="create" value="Add Work >">
+	</form>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+{% endblock %}

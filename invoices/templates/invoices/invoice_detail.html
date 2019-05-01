@@ -1,0 +1,71 @@
+{% extends 'invoices/base_view.html' %}
+{% block content %}
+<div class="conatiner">
+	<div class="card">
+		<div class="card-header">
+			<h1>Invoice {{invoice.id}}</h1>
+		</div>
+		<div class="card-body">
+			<div class="row mb-4">
+				<div class="col-sm-6">
+					<h5>From:</h5>
+					<h5>{{ invoice.get_invoicefor_name }}</h5>
+					<h5>{{ invoice.get_invoicefor_address }}</h5>
+				</div>
+				<div class="col-sm-6">
+					<div class="float-right">
+						<h5>Created: {{ invoice.invoice_date }}</h5>
+						<h5>Last updated: {{ invoice.last_updated }}</h5>
+						<h5>For: {{ invoice.job_number }}</h5>
+					</div>
+				</div>
+			</div>
+			<div class="row mb-4">
+				<div class="col-sm-6">
+					<h5>Bill To: </h5>
+					<h5>{{ invoice.get_billto_name }}</h5>
+					<h5>{{ invoice.get_billto_address }}</h5>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="table table-striped">
+				<table  align="center" width=75% class="table">
+					{% if invoice.work_set %}
+					<thead>
+						<tr>
+							<th>Category</th>
+							<th>Description</th>
+							<th>Amount</th>
+						</tr>
+					</thead>
+						{% for work in invoice.work_set.all %}
+							<tr>
+								<td>Work</td>
+								<td>{{ work.description }}</td>
+								<td>{{ work.get_amount }}</td>
+							</tr>
+						{% endfor %}
+					{% else %}
+						<p>No work invoices are available</p>
+					{% endif %}
+					{% if invoice.expense_set %}
+						{% for expense in invoice.expense_set.all %}
+							<tr>
+								<td>Expense</td>
+								<td>{{ expense.get_expense_description }}</td>
+								<td>{{ expense.get_amount }}</td>
+							</tr>
+						{% endfor %}
+					{% else %}
+						<p>No expense invoices are available</p>
+					{% endif %}
+				</table>
+			</div>
+			<a class="btn btn-danger" style="float: right; margin: 0.5%;" href="/invoices/	delete_invoice/{{ invoice.id }}">Delete</a>
+			<a class="btn btn-warning"" style="float: right; margin: 0.5%;" href="/invoices/	edit_invoice/{{ invoice.id }}">Edit</a>
+			<a class="btn btn-info"" style="float: right; margin: 0.5%;" href="/invoices/	print_invoice/{{ invoice.id }}">Print</a>
+		</div>
+	</div>
+</div>
+{% endblock %}

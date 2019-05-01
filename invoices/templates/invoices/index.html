@@ -1,0 +1,43 @@
+{% extends 'invoices/base_view.html' %}
+{% block content %}
+	{% include "invoices/charts/yearly_summary_div.html" %}
+	<div class="container">
+		<a class="btn btn-outline-success" href="/invoices/create_invoice">+ New Invoice</a>
+		<br>
+		<h1>Recent Invoices</h1>
+		<table class="table table-striped">
+			{% if latest_invoice_list %}
+			    <thead>
+			    	<tr>
+			    		<th>Invoice ID</th>
+			    		<th>Job Number</th>
+			    		<th>Created</th>
+			    		<th>Last Updated</th>
+			    		<th>Paid</th>
+			    	</tr>
+			    </thead>
+			    {% for invoice in latest_invoice_list %}
+			    	<tr>
+			    		<td><a href="/invoices/{{ invoice.id }}/">{{ invoice }}</a></td>
+			        	<td>{{invoice.job_number}} </td>
+			        	<td>{{ invoice.invoice_date}}</td>
+			        	<td>{{ invoice.last_updated }}</td>
+			        	{% if invoice.paid %}
+							<td>&#10004</td>
+						{% else %}
+							 <td>&times</td>
+						{% endif %}
+			        </tr>
+			    {% endfor %}
+			    </ul
+			{% else %}
+			    <p>No invoices are available.</p>
+			{% endif %}
+		</table>
+	</div>
+	
+{% endblock %}
+
+{% block scripts %}
+	{% include "invoices/charts/yearly_summary_script.html" with invoices=invoices expenses=expenses totals=totals year=year %}
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'invoices/base_view.html' %}
+
+{{ form.media }} 
+{% block content %}
+<div class="container">
+	<form class="form-horizontal" method="POST" action="">
+		{% csrf_token %}
+		<legend>Work Details</legend>
+		{{ work_formset.management_form }}
+		<div id="form_set">
+		    {% for form in work_formset %}
+		        <table class='no_error'>
+		        	<thead>
+		            	{{ form.as_table }}
+		            </thead>
+		        </table>
+		    {% endfor %}
+		</div>
+		<input class="btn btn-outline-success btn-sm" type="button" value="+ Add Work" id="add_more">
+		<div id="empty_form" style="display:none">
+		    <table class='no_error'>
+		        {{ work_formset.empty_form.as_table }}
+		    </table>
+		</div>
+		
+		<input class="btn btn-primary btn-sm" type="submit" name="update" value="Edit Expense >">
+		<a class="btn btn-danger btn-sm" href="/invoices/{{ invoice.id }}">Cancel</a>
+	</form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+	<script>
+		$('#add_more').click(function() {
+		        var form_idx = $('#id_form-TOTAL_FORMS').val();
+		        if (form_idx != 0) {
+		        	$('#form_set').append('<hr>');
+		        }
+
+		        $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+		        $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+	    });
+	</script>
+	
+{% endblock %}

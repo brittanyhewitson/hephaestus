@@ -1,0 +1,40 @@
+{% load static %} 
+<html>
+	<head>
+
+		<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+		<link rel="stylesheet" href="{% static 'css/style.css' %}">
+		
+		<title>Hephaestus Invoices</title>
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #E2DBFF;">
+  			<a class="navbar-brand" href="/invoices/">Hephaestus</a>
+  			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="navbarNavAltMarkup" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+    			<span class="navbar-toggler-icon"></span>
+  			</button>
+  			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    			<div class="navbar-nav">
+      			<a class="nav-item nav-link active" href="/invoices/">Home <span class="sr-only">(current)</span></a>
+      			<a class="nav-item nav-link" href="/invoices/invoice_list/">Invoices</a>
+      			<a class="nav-item nav-link" href="/invoices/invoice_summary/">Invoice Summary</a>
+    			</div>
+  			</div>
+  			<form class="form-inline my-2 my-lg-0" action="{% url 'search' %}" role="search">
+				<input class="form-control mr-sm-2" type="search" placeholder="Invoice ID" name="query_str">
+				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			</form>
+		</nav>
+
+		{% block content %}
+		{% endblock %}		
+	</body>
+
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+
+	{% block scripts %}
+	{% endblock %}
+
+</html>

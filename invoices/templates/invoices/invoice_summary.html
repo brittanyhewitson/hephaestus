@@ -1,0 +1,22 @@
+{% extends 'invoices/base_view.html' %}
+{% block content %}
+	{% include "invoices/charts/yearly_summary_div.html" %}
+	<br>
+	<form action="/date_select/" method="post">
+		<table align="center" with=75% class="table">
+			<tr>
+				<td>From date: </td>
+				<td>{{ date_select_form.from_date }}</td>
+			</tr>
+			<tr>
+				<td>To date: </td>
+				<td>{{ date_select_form.to_date }}</td>
+			</tr>
+		</table>
+		<input type="submit" value="submit">
+	</form>
+{% endblock %}
+
+{% block scripts %}
+	{% include "invoices/charts/yearly_summary_script.html" with invoices=invoices expenses=expenses totals=totals year=year %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'invoices/base_view.html' %}
+
+{% block content %}
+<form method="POST">
+	{% csrf_token %}
+	<body>
+		<p>Are you sure you want to delete {{ invoice.get_invoice_id }}?</p>
+	<input class="btn btn-danger btn-sm" type="submit" name="delete" value="Yes, I'm sure">
+	<a class="btn btn-default btn-sm" href="/invoices/invoice_list/">Cancel</a>
+	</body>
+</form>
+
+
+{% endblock %}
