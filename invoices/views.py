@@ -4,6 +4,7 @@ from django.template import loader
 from django import forms
 from django.views import generic
 from django.urls import reverse
+from datetime import datetime
 
 from django.utils import timezone
 from .utils import query_scripts
@@ -79,33 +80,7 @@ class InvoiceListView(generic.list.ListView):
 class CreateInvoiceView(generic.CreateView):
 
 	template_name = 'invoices/create_invoice.html'
-	'''
-	def get(self, request):
-		context = {
-			'title': "Invoice Information",
-			'invoice_form': InvoiceForm(), 			
-			'work_formset': WorkFormset(),
-			'expense_formset': ExpenseFormset(),
-		}
-		return render(request, self.template_name, context)
 
-	def post(self, request):
-		invoice_form = InvoiceForm(request.POST)
-		work_formset = WorkFormset(request.POST)
-		expense_formset = ExpenseFormset(request.POST)
-
-		if invoice_form.is_valid() and work_formset.is_valid() and expense_formset.is_valid():
-			invoice = invoice_form.save(commit=False)
-			work_formset.instance = invoice
-			expense_formset.instance = invoice
-
-			invoice.save()
-			work_formset.save()
-			expense_formset.save()
-
-			msg = "Successfully created your invoice!"
-			return HttpResponseRedirect(reverse('invoice_detail', args=(invoice.id, )))
-	'''
 	def get(self, request):
 		work_formset = WorkFormset(queryset=Invoice.objects.none())
 		context = {
@@ -127,9 +102,10 @@ class CreateWorkView(generic.CreateView):
 
 	def get(self, request, **kwargs):
 		invoice = get_object_or_404(Invoice, **kwargs)
+		invoice.set_invoice_id()
 		work_formset = WorkFormset(queryset=Invoice.objects.none())
 		context = {
-			'invoice_id': invoice.id,
+			'invoice_id': invoice.invoice_id,
 			'work_formset': work_formset
 		}
 		return render(request, self.template_name, context)
@@ -139,6 +115,8 @@ class CreateWorkView(generic.CreateView):
 
 		if work_formset.is_valid():
 			invoice = get_object_or_404(Invoice, **kwargs)
+			invoice.set_invoice_id()
+			
 			for work_form in work_formset:
 				if work_form.cleaned_data.get('description') and work_form.cleaned_data.get('amount'):
 					work = work_form.save(commit=False)
@@ -155,7 +133,7 @@ class CreateExpenseView(generic.CreateView):
 		invoice = get_object_or_404(Invoice, **kwargs)
 		expense_formset = ExpenseFormset(queryset=Invoice.objects.none())
 		context = {
-			'invoice_id': invoice.id,
+			'invoice_id': invoice.invoice_id,
 			'expense_formset': expense_formset
 		}
 		return render(request, self.template_name, context)
@@ -196,6 +174,7 @@ class EditInvoiceView(CreateInvoiceView):
 	def get(self, request, **kwargs):
 		invoice = get_object_or_404(Invoice, **kwargs)
 		context = {
+			'invoice': invoice,
 			'invoice_form': InvoiceForm(instance=invoice)
 		}
 		return render(request, self.template_name, context)
@@ -278,6 +257,35 @@ class DeleteInvoiceView(generic.DetailView):
 		msg = "Successfully deleted the invoice"
 		return HttpResponseRedirect(reverse('invoice_list'))
 
+'''
+class SummaryView(generic.ListView):
+	template_name = 'invoices/invoice_summary.html'
+
+	def get(self, request, **kwargs):
+		#form = SelectDateRangeForm()
+		invoices, expenses, totals, year = query_scripts.get_monthly_summary(Invoice)
+		context = {
+			'invoices': invoices,
+			'expenses': expenses,
+			'totals': totals,
+			'year': year,
+			#'date_select_form': form
+		}
+		return render(request, self.template_name, context)
+
+	#def post(self, request, **kwargs):
+		#form = SelectDateRangeForm(request.POST)
+		#if form.is_valid:
+		#	instance = form.save()
+'''
+'''
+
+class SummaryRangeView(generic.DetailView):
+	template_name = 'invoices/invoice_summary_range.html'
+
+	def get(self, request, **kwargs):
+
+'''
 
 class SummaryView(generic.ListView):
 	template_name = 'invoices/invoice_summary.html'
@@ -297,16 +305,34 @@ class SummaryView(generic.ListView):
 	def post(self, request, **kwargs):
 		form = SelectDateRangeForm(request.POST)
 		if form.is_valid:
-			instance = form.save()
+			from_date = form['from_date'].value()
+			to_date = form['to_date'].value()
 
-'''
+			return HttpResponseRedirect(
+				reverse(
+					'summary_range', 
+					args=(from_date, to_date, )
+				)
+			)
 
-class SummaryRangeView(generic.DetailView):
-	template_name = 'invoices/invoice_summary_range.html'
+
+class SummaryRangeView(generic.ListView):
+	template_name = 'invoices/summary_range.html'
 
 	def get(self, request, **kwargs):
+		invoice, expense, total = query_scripts.get_range_summary(
+			kwargs["from_date"], 
+			kwargs["to_date"]
+		)
+		context = {
+			'from_date': kwargs["from_date"],
+			'to_date': kwargs["to_date"],
+			'invoice_total': invoice,
+			'expense_total': expense,
+			'total': total
+		}
+		return render(request, self.template_name, context)
 
-'''
 
 def SearchView(request):
 	query_str = request.GET.get('query_str')

@@ -4,6 +4,7 @@ from bootstrap_datepicker_plus import DatePickerInput
 from django.db import models
 from django.shortcuts import get_object_or_404
 import datetime
+from django.forms.widgets import Textarea
 
 
 from .models import (
@@ -16,12 +17,16 @@ class InvoiceForm(forms.ModelForm):
 	class Meta:
 		model = Invoice
 
-		fields = '__all__'
+		fields = [
+			'invoice_date',
+			'job_number',
+			'invoice_for',
+			'bill_to',
+			'payment_notes',
+			'paid',
+		]
 		widgets = {
-			'invoice_date': forms.SelectDateWidget(
-				years=range(2010, 2030),
-				empty_label=('year', 'month', 'day')
-			), 
+			'invoice_date': DatePickerInput(format='%d/%m/%Y'),
 		}
 
 
@@ -33,29 +38,22 @@ class UpdateInvoiceForm(forms.ModelForm):
 			'job_number',
 			'invoice_for',
 			'bill_to',
-			'paid'
+			'payment_notes',
+			'paid',
 		]
 
 		widgets = {
-			'invoice_date': forms.SelectDateWidget(
-				years=range(2010, 2030),
-				empty_label=('year', 'month', 'day')
-			),
+			'invoice_date': DatePickerInput(format='%d/%m/%Y'),
+			'payment_notes': Textarea()
 		}
 
 
 class SelectDateRangeForm(forms.Form):
 	from_date = forms.fields.DateField(
-		widget=forms.SelectDateWidget(
-			years=range(2018, datetime.date.today().year+1),
-			empty_label=('year', 'month', 'day')
-		)
+		widget=DatePickerInput(format='%d/%m/%Y')
 	)
 	to_date = forms.fields.DateField(
-		widget=forms.SelectDateWidget(
-			years=range(2018, datetime.date.today().year+1),
-			empty_label=('year', 'month', 'day')
-		)
+		widget=DatePickerInput(format='%d/%m/%Y')
 	)
 
 WorkFormset = forms.modelformset_factory(

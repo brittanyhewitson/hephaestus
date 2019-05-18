@@ -47,6 +47,13 @@ class Invoice(models.Model):
 		blank=False,
 	)
 
+	payment_notes = models.CharField(
+		"Payment Notes",
+		null=True,
+		blank=True,
+		max_length=1000
+	)
+
 	invoice_date = models.DateField(
 		"Invoice Date", 
 		blank=False,
@@ -75,13 +82,63 @@ class Invoice(models.Model):
 		blank=True,
 		on_delete=models.CASCADE
 	)
+	invoice_id = models.IntegerField(
+			default="-1"
+		)
 
+	
 	def __str__(self):
-		return 'INVOICE_' + format(self.id, "04")
+		return "-".join(["INVOICE", str(self.invoice_date.year)[-2:], format(self.invoice_id, "04")])
+
+
 	
+	def set_invoice_id(self):
+		invoice_list = Invoice.objects.filter(invoice_date__year=self.invoice_date.year).order_by("-id")
+
+		# If this is the only invoice with this year
+		if len(invoice_list) <= 1:
+			self.invoice_id = 0
+			self.save(update_fields=["invoice_id"])
+			return
+
+		# Otherwise grab the last invoice besides this one
+		last_invoice = invoice_list[1]
+
+		# If the invoice ID has already been updated
+		if last_invoice.id == self.id and self.invoice_id != -1:
+			return
+		# Otherwise update
+		else:
+			self.invoice_id = last_invoice.invoice_id + 1
+			self.save(update_fields=["invoice_id"])
+
+		'''
+		invoice_list = Invoice.objects.all().order_by("-id")
+
+		# If this is the first invoice in the database
+		if len(invoice_list) <= 1:
+			self.invoice_id = 0
+			self.save(update_fields=["invoice_id"])
+			return 
+
+		last_invoice = invoice_list[1]
+
+		# If the invoice ID has already been updated
+		if last_invoice.id == self.id and self.invoice_id != -1:
+			return 
+		# If this is the first invoice in a new year
+		elif last_invoice.invoice_date.year < self.invoice_date.year:
+			self.invoice_id = 0
+			self.save(update_fields=["invoice_id"])
+		else:
+			self.invoice_id = last_invoice.invoice_id + 1
+			self.save(update_fields=["invoice_id"])
+		'''
+
+
 	def get_invoice_id(self):
-		return 'INVOICE_' + format(self.id, "04")
-	
+		return "-".join(["INVOICE", str(self.invoice_date.year)[-2:], format(self.invoice_id, "04")])
+
 	def get_invoice_work(self):
 		work_list=[]
 		for work in self.work_set.all():
