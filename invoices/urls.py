@@ -13,6 +13,7 @@ urlpatterns = [
 	re_path(r'edit_work/(?P<pk>\d+)/$', views.EditWorkView.as_view(), name='edit_work'),
 	re_path(r'edit_expense/(?P<pk>\d+)/$', views.EditExpenseView.as_view(), name='edit_expense'),
 	path('invoice_summary/', views.SummaryView.as_view(), name='invoice_summary'),
+	re_path(r'summary_range/(?P<from_date>\d{2,}/\d{2,}/\d{4,})/(?P<to_date>\d{2,}/\d{2,}/\d{4,})', views.SummaryRangeView.as_view(), name='summary_range'),
 	re_path(r'delete_invoice/(?P<pk>\d+)/$', views.DeleteInvoiceView.as_view(), name='invoice_delete'),
 	path('search/', views.SearchView, name='search'),
 	re_path(r'^print_invoice/(?P<pk>\d+)/$', views.PrintInvoiceView.as_view(), name='print_invoice')

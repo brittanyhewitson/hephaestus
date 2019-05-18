@@ -3,11 +3,26 @@
 {{ form.media }} 
 {% block content %}
 <div class="container">
+	<h3>Edit invoice {{ invoice.get_invoice_id }}</h3>
 	<form class="form-horizontal" method="POST" action="">
 		{% csrf_token %}
-		<table>
-			<thead>{{ invoice_form.as_p }}</thead>
-		</table>
+		{% load bootstrap4 %}
+		{% bootstrap_css %}
+		{% bootstrap_javascript jquery='full' %}
+		{{ invoice_form.media }}
+		<fieldset>
+			{% for field in invoice_form.visible_fields %}
+
+				<div class="form-group input-group row"">
+					<div class="col-sm-2 col-form-label">
+						{{ field.label_tag }}
+					</div>
+					<div style="height: 35px; margin: 0; top: 50%;">
+						{{ field }}
+					</div>
+				</div>
+			{% endfor %}
+		</fieldset>
 		
 		<input class="btn btn-primary btn-sm" type="submit" name="update" value="Edit Work >">
 		<a class="btn btn-danger btn-sm" href="/invoices/{{ invoice.id }}">Cancel</a>

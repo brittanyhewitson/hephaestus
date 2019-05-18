@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'bootstrap4',
     'bootstrap_datepicker_plus',
     'invoices.apps.InvoicesConfig',
     'django.contrib.admin',
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -84,7 +86,7 @@ WSGI_APPLICATION = 'hephaestus.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'hephaestus',
+        'NAME': 'test_invoice',
         'USER': 'brittany',
         'PASSWORD': 'postgres',
         'HOST': 'localhost',

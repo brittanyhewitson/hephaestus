@@ -3,14 +3,30 @@
 {{ form.media }} 
 {% block content %}
 <div class="container">
-	<form class="form-horizontal" method="POST" action="">
-		{% csrf_token %}
-		<table>
-			<thead>{{ invoice_form.as_p }}</thead>
-		</table>
-		
-		<input class="btn btn-primary btn-sm" type="submit" name="create" value="Add Work >">
-	</form>
+	<h3>Create a New Invoice</h3>
+	<div class="form-group" style="margin-top: 20px">
+		<form class="form-horizontal" method="POST" action="">
+			{% csrf_token %}
+			{% load bootstrap4 %}
+			{% bootstrap_css %}
+			{% bootstrap_javascript jquery='full' %}
+			{{ invoice_form.media }}
+			<fieldset>
+				{% for field in invoice_form.visible_fields %}
+					<div class="form-group input-group row"">
+						<div class="col-sm-2 col-form-label">
+							{{ field.label_tag }}
+						</div>
+						<div style="height: 35px; margin: 0; top: 50%;">
+							{{ field }}
+						</div>
+					</div>
+				{% endfor %}
+			</fieldset>
+			
+			<input class="btn btn-primary btn-sm" type="submit" name="create" value="Add Work >">
+		</form>
+	</div>
 </div>
 {% endblock %}
 

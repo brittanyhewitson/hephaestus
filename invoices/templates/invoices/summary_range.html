@@ -1,0 +1,15 @@
+{% extends 'invoices/base_view.html' %}
+{% block content %}
+	<!--{% include "invoices/charts/yearly_summary_div.html" %}-->
+	<div class="container">
+		<div class="jumbotron">
+			<h1 class="display-4">Summary</h1>
+			<p class="lead">All invoices between {{ from_date }} to {{ to_date }}</p>
+		<hr class="my-4">
+		</div>
+		<h2>Invoice total: ${{ invoice_total }}</h2>
+		<h2>Expense total: ${{ expense_total }}</h2>
+		<h2>Total invoice: ${{ total }}</h2>
+	</div>
+{% endblock %}
+
